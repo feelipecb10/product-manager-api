@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '3.2.4'
 	id 'io.spring.dependency-management' version '1.1.4'
 	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+	id 'org.liquibase.gradle' version '2.2.1'
 }
 
 group = 'com.productmanager'
@@ -32,16 +33,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.liquibase:liquibase-core'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'io.micrometer:micrometer-registry-datadog'
 	runtimeOnly 'org.postgresql:postgresql'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	liquibaseRuntime 'org.liquibase:liquibase-core:4.24.0'
+	liquibaseRuntime 'info.picocli:picocli:4.7.5'
+	liquibaseRuntime 'org.yaml:snakeyaml:1.33'
+	liquibaseRuntime 'org.postgresql:postgresql:42.7.3'
 }
 
 tasks.named('test') {
@@ -52,4 +55,18 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+task liquibaseExec {
+	liquibase {
+		activities {
+			main {
+				changelogFile   project.property("liquibaseChangelogFile")
+				driver          project.property("liquibaseDriver")
+				url             project.property("liquibaseUrl")
+				username        project.property("liquibaseUsername")
+				password        project.property("liquibasePassword")
+			}
+		}
+	}
 }
