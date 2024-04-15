@@ -1,25 +1,25 @@
-package com.productmanager.api.model.entities.defaultentity;
+package com.productmanager.api.model.dto.defaultdto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import com.productmanager.api.model.entities.defaultentity.DefaultEntity;
 
 import java.time.LocalDateTime;
 
-@MappedSuperclass
-public abstract class DefaultEntity {
+public class DefaultDTO {
 
-    @Column(name = "active")
     private boolean active = true;
 
-    @CreationTimestamp
-    @Column(name = "insertdate", nullable = false, updatable = false)
     private LocalDateTime insertDate;
 
-    @UpdateTimestamp
-    @Column(name = "updatedate")
     private LocalDateTime updateDate;
+
+    public DefaultDTO( ) {
+    }
+
+    public DefaultDTO(DefaultEntity entity) {
+       this.active = entity.isActive();
+       this.insertDate = entity.getInsertDate();
+       this.updateDate = entity.getUpdateDate();
+    }
 
     public boolean isActive() {
         return active;
