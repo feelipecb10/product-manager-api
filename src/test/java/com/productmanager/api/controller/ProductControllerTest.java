@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -34,6 +35,7 @@ public class ProductControllerTest {
     private ProductController productController;
 
     @Test
+    @WithMockUser
     public void testGetAllProducts() throws Exception {
         mock.perform(MockMvcRequestBuilders.get("/api/products")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -42,6 +44,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testGetProductById_WithValidId() throws Exception {
         Long id = 1L;
         mock.perform(MockMvcRequestBuilders.get("/api/products/{id}", id)
@@ -51,6 +54,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testGetProductById_WithInvalidId() throws Exception {
         Long id = -1L;
         mock.perform(MockMvcRequestBuilders.get("/api/products/{id}", id)

@@ -2,6 +2,7 @@ package com.productmanager.api.service;
 
 import com.productmanager.api.model.dto.ProductDTO;
 import com.productmanager.api.model.entities.Product;
+import com.productmanager.api.model.entities.Stock;
 import com.productmanager.api.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,18 @@ public class ProductService {
 
     public ProductDTO saveProduct(ProductDTO product) {
         Product entity = toEntity(product);
+        if (entity.getIdProduct() != 0l) {
+            Optional<Product> productOptional = productRepository.findById(entity.getIdProduct());
+            if (productOptional.isPresent()) {
+                entity = productOptional.get();
+                List<Stock> stockList = entity.getStockList();
+                Stock stock = new Stock();
+                stock.setProduct(entity);
+                stock.setQuantity(product.getAvailableStock());
+                stockList.add(stock);
+                entity.setStockList(stockList);
+            }
+        }
         return toDTO(productRepository.save(entity));
     }
 
@@ -53,6 +66,10 @@ public class ProductService {
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
         entity.setPrice(dto.getPrice());
+        Stock stock = new Stock();
+        stock.setQuantity(dto.getAvailableStock());
+        stock.setProduct(entity);
+        entity.setStockList(List.of(stock));
         return entity;
     }
 
