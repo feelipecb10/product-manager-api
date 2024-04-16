@@ -1,8 +1,9 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.4'
 	id 'io.spring.dependency-management' version '1.1.4'
-	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 	id 'org.liquibase.gradle' version '2.2.1'
 }
 
@@ -23,14 +24,9 @@ repositories {
 	mavenCentral()
 }
 
-ext {
-	set('snippetsDir', file("build/generated-snippets"))
-}
-
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
@@ -51,15 +47,25 @@ dependencies {
 	liquibaseRuntime 'org.postgresql:postgresql:42.7.3'
 }
 
-tasks.named('test') {
-	outputs.dir snippetsDir
+test {
 	useJUnitPlatform()
+	testLogging {
+		events TestLogEvent.FAILED,
+				TestLogEvent.PASSED,
+				TestLogEvent.SKIPPED
+		showExceptions true
+		showCauses true
+		showStackTraces true
+
+		afterSuite { desc, result ->
+			if (!desc.parent) {
+				def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+				println(output)
+			}
+		}
+	}
 }
 
-tasks.named('asciidoctor') {
-	inputs.dir snippetsDir
-	dependsOn test
-}
 
 task liquibaseExec {
 	liquibase {
