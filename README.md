@@ -51,5 +51,4 @@ Documentação da API, e interface web interativa para testar as APIs
 Para rodar os testes de unidade/integração de exemplo:
 > gradlew test
 
-#### Teste
 Implementado por: <br> Felipe Cordeiro Bochnia<br>
