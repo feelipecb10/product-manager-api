@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="0004_insert_into_table_product_values_initials" author="felipe.bochnia">
+        <insert tableName="product">
+            <column name="idproduct" valueNumeric="1"/>
+            <column name="sku" value="SKU001"/>
+            <column name="name" value="Product 1"/>
+            <column name="description" value="Description for Product 1"/>
+            <column name="price" valueNumeric="10.00"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="insertdate" valueDate="2024-04-15"/>
+            <column name="updatedate" valueDate="2024-04-15"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
